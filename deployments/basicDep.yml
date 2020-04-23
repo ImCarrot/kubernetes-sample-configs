@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: my-engine-dep # the name of the deployment
+ labels:
+  app: my-engine-dep # the label of this deployment (for filtering purpose)
+spec:
+ replicas: 3 # the number of replica pods to run
+ minReadySeconds: 10 # the number of seconds to wait to ensure the container can receive traffic
+ selector:
+  matchLabels:
+   app: my-engine # the label of the pod to match to bring under this deployment must match the label on the template
+ template:
+  metadata:
+   labels:
+    app: my-engine # the label of the pod that'll be spun up
+  spec:
+   containers:
+    - name: my-engine-pod # the name of the pod 
+      image: nginx:alpine # the docker image name 
+      ports:
+      - containerPort: 80 # the port to expose from the container
+      resources:
+       limits:
+        memory: "128Mi" # the memory assigned to the pod
+        cpu: "200m" # the CPU percent this is 200 milliCPU meaning 0.2 orr 20% of CPU

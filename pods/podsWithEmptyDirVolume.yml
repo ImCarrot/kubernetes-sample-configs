@@ -1,0 +1,33 @@
+# This is tied to the lifecycle of the pod, meaning when
+# pod goes down the volume disappears too! If you have 
+# multiple containers running inside of a pod, then this 
+# provides a very easy way to share data between them.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-engine
+  labels:
+    app: nginx
+    rel: stable
+spec:
+  containers:
+  - name: my-engine-container
+    image: nginx:alpine
+    volumeMounts:
+      - name: html
+        mountPath: /usr/share/nginx/html
+        readOnly: true
+    resources:
+  - name: html-updater
+    image: alpine
+    command: ["/bin/sh", "-c"]
+    args:
+      - while true; do date >> /html/index.html;sleep 10; done
+    resources:
+    volumeMounts:
+      - name: html
+        mountPath: /html
+  volumes:
+  - name: html
+    emptyDir: {}
